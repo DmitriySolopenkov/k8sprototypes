@@ -14,7 +14,7 @@ API_SERVER_ADDRESS=192.168.1.35
 #CLUSTER=cipv6 CONFIG=kind-conf-ipv6.yaml ./kind-local-up.sh
 # Calico usage - CLUSTER=calico CONFIG=kind-conf.yaml API_SERVER_PORT=6443 ./kind-local-up.sh
 # Antrea usage - CLUSTER=antrea CONFIG=kind-conf.yaml ./kind-local-up.sh
-# Cilium usage - CLUSTER=cilium CONFIG=cilium-conf.yaml API_SERVER_PORT=8443 ./kind-local-up.sh
+# Cilium usage - CLUSTER=cilium CONFIG=cilium-conf.yaml API_SERVER_PORT=7443 ./kind-local-up.sh
 
 function check_kind() {
     if [ kind > /dev/null ]; then
@@ -32,7 +32,7 @@ networking:
   disableDefaultCNI: true # disable kindnet
   podSubnet: $POD_SUBNET
   apiServerPort: $API_SERVER_PORT
-  apiServerAddress: $API_SERVER_ADDRESS
+  apiServerAddress: "$API_SERVER_ADDRESS"
 nodes:
 - role: control-plane
 - role: worker
@@ -50,7 +50,7 @@ nodes:
 networking:
   disableDefaultCNI: true
   apiServerPort: $API_SERVER_PORT
-  apiServerAddress: $API_SERVER_ADDRESS
+  apiServerAddress: "$API_SERVER_ADDRESS"
 EOF
 }
 

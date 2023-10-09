@@ -30,7 +30,7 @@ apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   disableDefaultCNI: true # disable kindnet
   podSubnet: $POD_SUBNET
-  apiServerPort: API_SERVER_PORT
+  apiServerPort: $API_SERVER_PORT
 nodes:
 - role: control-plane
 - role: worker
@@ -47,7 +47,7 @@ nodes:
 - role: worker
 networking:
   disableDefaultCNI: true
-  apiServerPort: API_SERVER_PORT
+  apiServerPort: $API_SERVER_PORT
 EOF
 }
 

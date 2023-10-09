@@ -7,6 +7,7 @@ POD_SUBNET="192.168.254.0/30" # for testing exhaustion @peri
 POD_SUBNET="192.168.254.0/16"
 CLUSTER=${CLUSTER:-calico}
 CONFIG=${CONFIG:-calico-conf.yaml}
+API_SERVER_ADDRESS=192.168.1.35
 
 # Usage examples:
 #CLUSTER=nocni CONFIG="calico-conf.yaml" ./kind-local-up.sh
@@ -31,6 +32,7 @@ networking:
   disableDefaultCNI: true # disable kindnet
   podSubnet: $POD_SUBNET
   apiServerPort: $API_SERVER_PORT
+  apiServerAddress: $API_SERVER_ADDRESS
 nodes:
 - role: control-plane
 - role: worker
@@ -48,6 +50,7 @@ nodes:
 networking:
   disableDefaultCNI: true
   apiServerPort: $API_SERVER_PORT
+  apiServerAddress: $API_SERVER_ADDRESS
 EOF
 }
 

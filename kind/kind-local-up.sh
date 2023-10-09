@@ -7,13 +7,14 @@ POD_SUBNET="192.168.254.0/30" # for testing exhaustion @peri
 POD_SUBNET="192.168.254.0/16"
 CLUSTER=${CLUSTER:-calico}
 CONFIG=${CONFIG:-calico-conf.yaml}
+API_SERVER_PORT=6443
 
 # Usage examples:
 #CLUSTER=nocni CONFIG="calico-conf.yaml" ./kind-local-up.sh
 #CLUSTER=cipv6 CONFIG=kind-conf-ipv6.yaml ./kind-local-up.sh
-# Calico usage - CLUSTER=calico CONFIG=kind-conf.yaml ./kind-local-up.sh
+# Calico usage - CLUSTER=calico CONFIG=kind-conf.yaml API_SERVER_PORT=6443 ./kind-local-up.sh
 # Antrea usage - CLUSTER=antrea CONFIG=kind-conf.yaml ./kind-local-up.sh
-# Cilium usage - CLUSTER=cilium CONFIG=cilium-conf.yaml ./kind-local-up.sh
+# Cilium usage - CLUSTER=cilium CONFIG=cilium-conf.yaml API_SERVER_PORT=8443 ./kind-local-up.sh
 
 function check_kind() {
     if [ kind > /dev/null ]; then
@@ -30,6 +31,7 @@ apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   disableDefaultCNI: true # disable kindnet
   podSubnet: $POD_SUBNET
+  apiServerPort: API_SERVER_PORT
 nodes:
 - role: control-plane
 - role: worker
@@ -46,6 +48,7 @@ nodes:
 - role: worker
 networking:
   disableDefaultCNI: true
+  apiServerPort: API_SERVER_PORT
 EOF
 }
 

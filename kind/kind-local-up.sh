@@ -7,7 +7,6 @@ POD_SUBNET="192.168.254.0/30" # for testing exhaustion @peri
 POD_SUBNET="192.168.254.0/16"
 CLUSTER=${CLUSTER:-calico}
 CONFIG=${CONFIG:-calico-conf.yaml}
-API_SERVER_PORT=6443
 
 # Usage examples:
 #CLUSTER=nocni CONFIG="calico-conf.yaml" ./kind-local-up.sh

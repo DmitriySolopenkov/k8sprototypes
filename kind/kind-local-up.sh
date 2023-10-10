@@ -129,7 +129,7 @@ function install_antrea() {
 }
 
 function install_cilium() {
-    CILIUM_VERSION="1.9.1"
+    CILIUM_VERSION="1.14.2"
 
     # Add Cilium Helm repo
     helm repo add cilium https://helm.cilium.io/

@@ -7,14 +7,16 @@ POD_SUBNET="192.168.254.0/30" # for testing exhaustion @peri
 POD_SUBNET="192.168.254.0/16"
 CLUSTER=${CLUSTER:-calico}
 CONFIG=${CONFIG:-calico-conf.yaml}
-API_SERVER_ADDRESS=192.168.1.35
+API_SERVER_ADDRESS="192.168.1.35"
+API_SERVER_PORT=6443
 
 # Usage examples:
 #CLUSTER=nocni CONFIG="calico-conf.yaml" ./kind-local-up.sh
 #CLUSTER=cipv6 CONFIG=kind-conf-ipv6.yaml ./kind-local-up.sh
-# Calico usage - CLUSTER=calico CONFIG=kind-conf.yaml API_SERVER_PORT=6443 ./kind-local-up.sh
+# Calico usage - CLUSTER=calico CONFIG=kind-conf.yaml ./kind-local-up.sh
 # Antrea usage - CLUSTER=antrea CONFIG=kind-conf.yaml ./kind-local-up.sh
-# Cilium usage - CLUSTER=cilium CONFIG=cilium-conf.yaml API_SERVER_PORT=7443 ./kind-local-up.sh
+# Cilium usage - CLUSTER=cilium CONFIG=cilium-conf.yaml ./kind-local-up.sh
+# Cilium-ingress usage - CLUSTER=cilium-ingress CONFIG=cilium-ingress.yaml ./kind-local-up.sh
 
 function check_kind() {
     if [ kind > /dev/null ]; then
@@ -32,7 +34,7 @@ networking:
   disableDefaultCNI: true # disable kindnet
   podSubnet: $POD_SUBNET
   apiServerPort: $API_SERVER_PORT
-  apiServerAddress: "$API_SERVER_ADDRESS"
+  apiServerAddress: $API_SERVER_ADDRESS
 nodes:
 - role: control-plane
 - role: worker
@@ -45,12 +47,31 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
 - role: worker
-- role: worker
-- role: worker
+# - role: worker
+# - role: worker
 networking:
   disableDefaultCNI: true
   apiServerPort: $API_SERVER_PORT
-  apiServerAddress: "$API_SERVER_ADDRESS"
+  apiServerAddress: $API_SERVER_ADDRESS
+EOF
+
+    cat << EOF > cilium-ingress.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+  extraPortMappings:
+    - containerPort: 80
+      hostPort: 8080
+      listenAddress: "0.0.0.0"
+    - containerPort: 443
+      hostPort: 8443
+      listenAddress: "0.0.0.0"
+networking:
+  disableDefaultCNI: true
+  apiServerPort: $API_SERVER_PORT
+  apiServerAddress: $API_SERVER_ADDRESS
 EOF
 }
 
@@ -157,6 +178,11 @@ case "$CLUSTER" in
         install_calico
         ;;
     "cilium")
+        echo "Using Cilium CNI."
+        install_k8s
+        install_cilium
+        ;;
+    "cilium-ingress")
         echo "Using Cilium CNI."
         install_k8s
         install_cilium
